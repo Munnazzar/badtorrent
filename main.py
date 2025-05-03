@@ -43,6 +43,20 @@ def print_torrent_info(torrent_info):
             print(f"  - {path} ({length / (1024*1024):.2f} MB)")
 
 def main():
+    """
+    Main entry point for the BitTorrent client command-line interface.
+    This function parses command-line arguments and executes the corresponding command.
+    Supported commands:
+        - decode <bencoded_value>: Decodes a bencoded value and prints it as JSON.
+        - info <torrent_file>: Displays information about the specified torrent file.
+        - peers <torrent_file>: Retrieves and displays peers from the torrent's tracker.
+        - handshake <torrent_file> <peer>: Performs a BitTorrent handshake with a specified peer.
+        - download_piece <torrent_file> <save_path> <piece_index>: Downloads a single piece from the torrent.
+        - download <torrent_file> <save_path>: Downloads the entire torrent.
+    Usage:
+        python main.py <command> <torrent_file> [options]
+    Exits with an error message if arguments are missing or invalid, or if an error occurs during execution.
+    """
     if len(sys.argv) < 2:
         print("Usage: python main.py <command> <torrent_file> [options]")
         print("Commands:")
@@ -81,6 +95,7 @@ def main():
         print_torrent_info(torrent_info)
     elif command == "peers":
         try:
+            
             if torrent_info.tracker_url.startswith(("http://", "https://")):
                 response = requests.get(torrent_info.tracker_url, params={
                     "info_hash": bytes.fromhex(torrent_info.info_hash),
